@@ -3,7 +3,7 @@ pipeline {
     environment {
         TF_VAR_gcp_project = "qwiklabs-gcp-04-5ce8bcf61c8b"
         TF_VAR_bucket = "tf-remote-state-student_00_0c7e38130425-15820-14552"
-        REPOSITORY = "https://github.com/unix-eye/cicd02-starter"
+        REPOSITORY = "https://github.com/unix-eye/sample-awx-project.git"
         TF_VAR_pubkey_path = "${WORKSPACE}/ansible_key.pub"
     }
     stages {
