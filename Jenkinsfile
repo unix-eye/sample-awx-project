@@ -17,7 +17,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 dir("terraform") {
-                    withCredentials([file(credentialsId: 'gcp-svc-acct', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
+                    withCredentials([file(credentialsId: 'gcp-svc-acct-pb', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
                         sh "ansible 127.0.0.1 -m template -a 'src=${WORKSPACE}/terraform/main.tftemp dest=${WORKSPACE}/terraform/main.tf' -e 'bucket=$TF_VAR_bucket'"
                         sh '''
                         export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
@@ -30,7 +30,7 @@ pipeline {
         stage('Terraform Plan') {
             steps {
                 dir("terraform") {
-                    withCredentials([file(credentialsId: 'gcp-svc-acct', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
+                    withCredentials([file(credentialsId: 'gcp-svc-acct-pb', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
                         sh '''
                         export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
                         terraform plan
@@ -42,7 +42,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 dir("terraform") {
-                    withCredentials([file(credentialsId: 'gcp-svc-acct', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
+                    withCredentials([file(credentialsId: 'gcp-svc-acct-pb', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
                         sh '''
                         export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
                         terraform apply -auto-approve
@@ -54,7 +54,7 @@ pipeline {
         stage('Ansible Playbook') {
             steps {
                 dir("ansible") {
-                    withCredentials([sshUserPrivateKey(credentialsId: "SSH_KEY", keyFileVariable: "ANSIBLE_PRIVATE_KEY_FILE"), file(credentialsId: 'gcp-svc-acct', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: "SSH_KEY", keyFileVariable: "ANSIBLE_PRIVATE_KEY_FILE"), file(credentialsId: 'gcp-svc-acct-pb', variable: 'GOOGLE_CLOUD_KEYFILE_JSON')]) {
                         sh "ansible 127.0.0.1 -m template -a 'src=${WORKSPACE}/ansible/inventory_template.yml dest=${WORKSPACE}/ansible/inventory.gcp_compute.yml' -e 'project_id=${TF_VAR_gcp_project}'" 
                         sh '''
                         export GOOGLE_APPLICATION_CREDENTIALS=$GOOGLE_CLOUD_KEYFILE_JSON
